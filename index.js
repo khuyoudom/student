@@ -12,6 +12,8 @@ const webRoutes = require("./src/routes/web");
 const apiRoutes = require("./src/routes/api");
 const { connectMongoDB, getDb } = require("./src/config/mongodb");
 
+let isConnected = false;
+
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 
@@ -39,6 +41,22 @@ app.use((req, res, next) => {
   res.locals.apiToken = req.session.apiToken || null;
   res.locals.path = req.path;
   next();
+});
+
+// Serverless MongoDB connection middleware
+app.use(async (req, res, next) => {
+  try {
+    if (!isConnected) {
+      await connectMongoDB();
+      isConnected = true;
+      // Seed data if needed, but not blocking every request ideally.
+      // We will leave seedData to internal logic or only on startup to avoid performance hit.
+    }
+    next();
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error);
+    next(error);
+  }
 });
 
 app.use("/api", apiRoutes);
@@ -146,6 +164,7 @@ async function seedData() {
 async function startServer() {
   try {
     await connectMongoDB();
+    isConnected = true;
     await seedData();
 
     app.listen(PORT, () => {
@@ -157,4 +176,8 @@ async function startServer() {
   }
 }
 
-startServer();
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  startServer();
+}
+
+module.exports = app;
