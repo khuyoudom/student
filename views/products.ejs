@@ -1,0 +1,71 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>Products / Services</h1>
+    <p><%= total %> items found</p>
+  </div>
+
+  <form method="get" action="/products" class="filter-bar card">
+    <input type="text" name="q" value="<%= q %>" placeholder="Search products..." />
+    <select name="category">
+      <option value="">All categories</option>
+      <% categories.forEach((cat) => { %>
+        <option value="<%= cat.id %>" <%= String(categoryId) === String(cat.id) ? 'selected' : '' %>><%= cat.name %></option>
+      <% }) %>
+    </select>
+    <button class="btn" type="submit">Filter</button>
+  </form>
+
+  <div class="grid cards-grid">
+    <% products.forEach((item) => { %>
+      <% const isFree = !item.price || Number(item.price) === 0; %>
+      <article class="card product-card">
+        <div class="product-media">
+          <img src="<%= item.image || 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200' %>" alt="<%= item.title %>" />
+          <% if (isFree) { %>
+            <span class="badge-free">Free</span>
+          <% } %>
+          <% if (item.video) { %>
+            <div class="media-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+              </svg>
+            </div>
+          <% } %>
+        </div>
+        <div>
+          <p class="tag"><%= item.category ? item.category.name : 'General' %></p>
+          <h3><%= item.title %></h3>
+          <p><%= item.description.slice(0, 95) %>...</p>
+          <p class="price">
+            <% if (isFree) { %>
+              <span class="price-free">Free</span>
+            <% } else { %>
+              $<%= Number(item.price).toFixed(2) %>
+            <% } %>
+          </p>
+          <a href="/products/<%= item.id %>" class="btn-inline">
+            <% if (isFree && item.video) { %>
+              Watch Now
+            <% } else if (isFree) { %>
+              View Details
+            <% } else { %>
+              View Details
+            <% } %>
+          </a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+
+  <div class="pagination">
+    <% for (let i = 1; i <= pageCount; i++) { %>
+      <a class="<%= i === page ? 'active' : '' %>" href="/products?page=<%= i %>&q=<%= encodeURIComponent(q || '') %>&category=<%= categoryId %>"><%= i %></a>
+    <% } %>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

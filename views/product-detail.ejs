@@ -1,0 +1,64 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/navbar') %>
+
+<main class="shell section">
+  <% const isFree = !product.price || Number(product.price) === 0; %>
+  <article class="card detail-grid">
+    <div class="detail-media">
+      <% if (product.video && isFree) { %>
+        <video controls style="width: 100%; height: auto; border-radius: 12px; background: #000;">
+          <source src="<%= product.video %>" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      <% } else if (product.image) { %>
+        <img src="<%= product.image %>" alt="<%= product.title %>" style="width: 100%; border-radius: 12px;" />
+      <% } else { %>
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200" alt="<%= product.title %>" style="width: 100%; border-radius: 12px;" />
+      <% } %>
+    </div>
+    <div class="detail-content">
+      <p class="tag"><%= product.category ? product.category.name : 'General' %></p>
+      <h1><%= product.title %></h1>
+      
+      <div class="price-section">
+        <% if (isFree) { %>
+          <div class="price-badge-free">FREE</div>
+          <p class="price-label">Watch this free content</p>
+        <% } else { %>
+          <p class="price">$<%= Number(product.price).toFixed(2) %></p>
+          <p class="price-label">Premium content</p>
+        <% } %>
+      </div>
+
+      <p class="description"><%= product.description %></p>
+
+      <div class="action-buttons">
+        <% if (isFree && product.video) { %>
+          <button class="btn" disabled style="cursor: default; opacity: 0.7;">
+            ✓ Available to Watch
+          </button>
+          <p class="hint">This free content is ready to view. Check the video above.</p>
+        <% } else if (isFree) { %>
+          <button class="btn" disabled style="cursor: default; opacity: 0.7;">
+            ✓ Free Content
+          </button>
+          <p class="hint">This item is available to download and view.</p>
+        <% } else if (currentUser) { %>
+          <form action="/orders" method="post" class="inline-form">
+            <input type="hidden" name="productId" value="<%= product.id %>" />
+            <input type="hidden" name="total_price" value="<%= Number(product.price).toFixed(2) %>" />
+            <button class="btn" type="submit">Buy Now</button>
+          </form>
+          <p class="hint">Purchase this premium content</p>
+        <% } else { %>
+          <p class="hint" style="color: var(--accent);">Login first to purchase this product.</p>
+          <a href="/login" class="btn">Login to Purchase</a>
+        <% } %>
+      </div>
+
+      <a href="/products" class="btn-inline mt-20">Back to list</a>
+    </div>
+  </article>
+</main>
+
+<%- include('partials/footer') %>

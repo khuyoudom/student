@@ -1,0 +1,52 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>Manage Categories</h1>
+    <a href="/admin" class="btn-inline">Back to Dashboard</a>
+  </div>
+
+  <div class="grid two-col">
+    <section class="card">
+      <h2>Add Category</h2>
+      <form method="post" action="/admin/categories" class="grid-form">
+        <label>Name <input type="text" name="name" required /></label>
+        <button class="btn" type="submit">Add</button>
+      </form>
+    </section>
+
+    <section class="card table-wrap">
+      <h2>Category List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% categories.forEach((category) => { %>
+            <tr>
+              <td><%= category.id %></td>
+              <td>
+                <form class="inline-form" method="post" action="/admin/categories/<%= category.id %>?_method=PUT">
+                  <input type="text" name="name" value="<%= category.name %>" required />
+                  <button class="btn-inline" type="submit">Update</button>
+                </form>
+              </td>
+              <td>
+                <form method="post" action="/admin/categories/<%= category.id %>?_method=DELETE" onsubmit="return confirm('Delete this category?')">
+                  <button class="ghost-btn" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

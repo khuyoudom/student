@@ -1,0 +1,35 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>Admin Dashboard</h1>
+    <p>Overview of platform activity and inventory.</p>
+  </div>
+
+  <div class="grid stat-grid">
+    <article class="card stat-card"><h3><%= stats.users %></h3><p>Users</p></article>
+    <article class="card stat-card"><h3><%= stats.products %></h3><p>Products</p></article>
+    <article class="card stat-card"><h3><%= stats.categories %></h3><p>Categories</p></article>
+    <article class="card stat-card"><h3><%= stats.orders %></h3><p>Orders</p></article>
+  </div>
+
+  <div class="grid two-col">
+    <section class="card">
+      <h2>Order Status Chart</h2>
+      <canvas id="ordersChart" data-chart='<%- JSON.stringify(stats.ordersByStatus) %>'></canvas>
+    </section>
+    <section class="card">
+      <h2>Quick Links</h2>
+      <div class="quick-links">
+        <a href="/admin/users" class="btn-inline">Manage Users</a>
+        <a href="/admin/categories" class="btn-inline">Manage Categories</a>
+        <a href="/admin/products" class="btn-inline">Manage Products</a>
+        <a href="/admin/orders" class="btn-inline">Manage Orders</a>
+      </div>
+      <p class="hint">API token from login session can be used for protected REST API access.</p>
+    </section>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

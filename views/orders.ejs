@@ -1,0 +1,39 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>My Orders</h1>
+    <a href="/products" class="btn-inline">Continue Shopping</a>
+  </div>
+
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>User</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!orders.length) { %>
+          <tr><td colspan="5">No orders yet.</td></tr>
+        <% } %>
+        <% orders.forEach((order) => { %>
+          <tr>
+            <td><%= order.id %></td>
+            <td>$<%= Number(order.total_price).toFixed(2) %></td>
+            <td><span class="status-pill status-<%= order.status %>"><%= order.status %></span></td>
+            <td><%= order.user ? order.user.name : '-' %></td>
+            <td><%= new Date(order.created_at).toLocaleString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

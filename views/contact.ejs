@@ -1,0 +1,14 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/navbar') %>
+<main class="shell section">
+  <div class="card">
+    <h1>Contact</h1>
+    <form class="grid-form" action="#" method="post">
+      <label>Name <input type="text" placeholder="Your full name" required /></label>
+      <label>Email <input type="email" placeholder="you@example.com" required /></label>
+      <label>Message <textarea rows="5" placeholder="How can we help?" required></textarea></label>
+      <button class="btn" type="submit">Send Message</button>
+    </form>
+  </div>
+</main>
+<%- include('partials/footer') %>

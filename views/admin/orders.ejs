@@ -1,0 +1,52 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>Manage Orders</h1>
+    <a href="/admin" class="btn-inline">Back to Dashboard</a>
+  </div>
+
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Email</th>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!orders.length) { %>
+          <tr><td colspan="7">No orders yet.</td></tr>
+        <% } %>
+        <% orders.forEach((order) => { %>
+          <tr>
+            <td><%= order.id %></td>
+            <td><%= order.user ? order.user.name : '-' %></td>
+            <td><%= order.user ? order.user.email : '-' %></td>
+            <td>$<%= Number(order.total_price).toFixed(2) %></td>
+            <td><span class="status-pill status-<%= order.status %>"><%= order.status %></span></td>
+            <td><%= new Date(order.created_at).toLocaleString() %></td>
+            <td>
+              <form action="/admin/orders/<%= order.id %>/status" method="post" class="inline-form">
+                <select name="status">
+                  <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>pending</option>
+                  <option value="paid" <%= order.status === 'paid' ? 'selected' : '' %>>paid</option>
+                  <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>cancelled</option>
+                </select>
+                <button class="btn-inline" type="submit">Update</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

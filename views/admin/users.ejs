@@ -1,0 +1,46 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>Manage Users</h1>
+    <a href="/admin" class="btn-inline">Back to Dashboard</a>
+  </div>
+
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user) => { %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.role %></td>
+            <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+            <td>
+              <form method="post" action="/admin/users/<%= user.id %>/role" class="inline-form">
+                <select name="role">
+                  <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                  <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                </select>
+                <button type="submit" class="btn-inline">Save</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

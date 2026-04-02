@@ -1,0 +1,19 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/navbar') %>
+
+<main class="shell section small-shell">
+  <div class="card">
+    <h1>Login</h1>
+    <% if (errors.length) { %>
+      <div class="alert"><%= errors.join(', ') %></div>
+    <% } %>
+
+    <form action="/login" method="post" class="grid-form">
+      <label>Email <input type="email" name="email" required /></label>
+      <label>Password <input type="password" name="password" required /></label>
+      <button class="btn" type="submit">Login</button>
+    </form>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

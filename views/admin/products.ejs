@@ -1,0 +1,99 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="shell section">
+  <div class="section-head">
+    <h1>Manage Products</h1>
+    <a href="/admin" class="btn-inline">Back to Dashboard</a>
+  </div>
+
+  <% if (uploadError) { %>
+    <div class="alert"><%= uploadError %></div>
+  <% } %>
+
+  <section class="card">
+    <h2>Add Product</h2>
+    <form method="post" action="/admin/products" enctype="multipart/form-data" class="grid-form add-product-form" data-add-product-form novalidate>
+      <div class="form-error" data-form-error hidden></div>
+      <label>Title <input type="text" name="title" required /></label>
+      <label>Description <textarea name="description" rows="3"></textarea></label>
+      <label>Price <input type="number" name="price" step="0.01" min="0" placeholder="Enter price (optional)" /></label>
+      <label>Category
+        <select name="category_id" required>
+          <% categories.forEach((category) => { %>
+            <option value="<%= category.id %>"><%= category.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Image <input type="file" name="image" accept="image/*" /></label>
+      <label>Video <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" /></label>
+      <button class="btn" type="submit">Create Product</button>
+    </form>
+  </section>
+
+  <section class="card table-wrap mt-20">
+    <h2>Product List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Image</th>
+          <th>Video</th>
+          <th>Title</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach((product) => { %>
+          <tr>
+            <td><%= product.id %></td>
+            <td>
+              <% if (product.image) { %>
+                <img src="<%= product.image %>" alt="<%= product.title %>" class="thumb" />
+              <% } else { %>
+                -
+              <% } %>
+            </td>
+            <td>
+              <% if (product.video) { %>
+                <video class="thumb" controls preload="metadata">
+                  <source src="<%= product.video %>" type="video/mp4" />
+                </video>
+              <% } else { %>
+                -
+              <% } %>
+            </td>
+            <td><%= product.title %></td>
+            <td><%= product.price === null || product.price === undefined ? '-' : `$${Number(product.price).toFixed(2)}` %></td>
+            <td><%= product.category ? product.category.name : '-' %></td>
+            <td>
+              <details>
+                <summary>Edit</summary>
+                <form method="post" action="/admin/products/<%= product.id %>?_method=PUT" enctype="multipart/form-data" class="grid-form mt-10">
+                  <input type="text" name="title" value="<%= product.title %>" required />
+                  <textarea name="description" rows="3"><%= product.description %></textarea>
+                  <input type="number" name="price" value="<%= product.price === null || product.price === undefined ? '' : Number(product.price) %>" step="0.01" min="0" placeholder="Enter price (optional)" />
+                  <select name="category_id" required>
+                    <% categories.forEach((category) => { %>
+                      <option value="<%= category.id %>" <%= String(product.category_id) === String(category.id) ? 'selected' : '' %>><%= category.name %></option>
+                    <% }) %>
+                  </select>
+                  <input type="file" name="image" accept="image/*" />
+                  <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" />
+                  <button class="btn-inline" type="submit">Save</button>
+                </form>
+              </details>
+              <form method="post" action="/admin/products/<%= product.id %>?_method=DELETE" onsubmit="return confirm('Delete this product?')" class="mt-10">
+                <button class="ghost-btn" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
